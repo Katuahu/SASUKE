@@ -26,11 +26,11 @@ USER_FILE = "users.txt"
 
 # Cooldowns and binaries for each attack
 attack_cooldowns = {
-    'attack1': {'cooldown': 240, 'last_used': None, 'binary': './RAGNAROK'},
-    'attack2': {'cooldown': 300, 'last_used': None, 'binary': './RAGNAROK1'},
-    'attack3': {'cooldown': 280, 'last_used': None, 'binary': './RAGNAROK2'},
-    'attack4': {'cooldown': 300, 'last_used': None, 'binary': './RAGNAROK3'},
-    'attack5': {'cooldown': 340, 'last_used': None, 'binary': './RAGNAROK4'}
+    'attack1': {'cooldown': 240, 'last_used': None, 'binary': 'RAGNAROK'},
+    'attack2': {'cooldown': 300, 'last_used': None, 'binary': 'RAGNAROK1'},
+    'attack3': {'cooldown': 280, 'last_used': None, 'binary': 'RAGNAROK2'},
+    'attack4': {'cooldown': 300, 'last_used': None, 'binary': 'RAGNAROK3'},
+    'attack5': {'cooldown': 340, 'last_used': None, 'binary': 'RAGNAROK4'}
 }
 
 # Global variables
@@ -119,7 +119,7 @@ def handle_attack(message):
         return
 
     # Execute the attack
-    full_command = f"{binary} <target_ip> <target_port> <duration>"
+    full_command = f"./{binary} <target_ip> <target_port> <duration>"
     try:
         bot.reply_to(
             message,
