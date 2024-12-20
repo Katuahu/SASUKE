@@ -6,7 +6,7 @@ import subprocess
 import threading
 
 # Insert your Telegram bot token here
-bot = telebot.TeleBot('8055632675:AAFP5nV0zAFvGtKy70oSAnG6pZQ0hDmBIZ4')
+bot = telebot.TeleBot('YOUR_BOT_TOKEN')
 
 # Admin user IDs
 admin_id = ["5599402910"]
@@ -82,16 +82,15 @@ def handle_attack(message):
 
     # Ensure cooldown is respected
     now = datetime.datetime.now()
-
-    # Apply cooldown check and start cooldown immediately when attack is initiated
     if attack_data['last_used'] and (now - attack_data['last_used']).seconds < cooldown:
         remaining = cooldown - (now - attack_data['last_used']).seconds
         bot.reply_to(
-    message, 
-    f"⏳ **{command} is on cooldown:** `{remaining} seconds` remaining.\n\n"
-    f"Click /attack_status to see all attacks' status."
-)
-return
+            message, 
+            f"⏳ **{command} is on cooldown:** `{remaining} seconds` remaining.\n\n"
+            f"Click /attack_status to see all attacks' status."
+        )
+        return
+
     # Check usage requirements
     if message.chat.id != int(GROUP_ID):
         bot.reply_to(message, "❌ This bot can only be used in the specified group.")
@@ -103,7 +102,7 @@ return
         user_data[user_id] = {'attacks': 0, 'last_reset': datetime.datetime.now()}
     user = user_data[user_id]
     if user['attacks'] >= ATTACK_LIMIT:
-        bot.reply_to(message, f"❌ Daily limit reached. Try again tomorrow!")
+        bot.reply_to(message, "❌ Daily limit reached. Try again tomorrow!")
         return
 
     # Parse command arguments
@@ -139,7 +138,7 @@ return
 
         # Execute the attack
         subprocess.run(full_command, shell=True)
-        bot.reply_to(message, f"✅ **Attack Completed Successfully!**")
+        bot.reply_to(message, "✅ **Attack Completed Successfully!**")
     except Exception as e:
         bot.reply_to(message, f"❌ Execution Error: {str(e)}")
         return
@@ -249,7 +248,6 @@ def auto_reset():
 # Start auto-reset in a separate thread
 reset_thread = threading.Thread(target=auto_reset, daemon=True)
 reset_thread.start()
-
 # Load user data on startup
 load_users()
 
