@@ -119,7 +119,7 @@ def handle_attack(message):
         return
 
     # Execute the attack
-    full_command = f"{binary} {target} {port} {time_duration}"
+    full_command = f"{binary} <target_ip> <target_port> <duration>"
     try:
         bot.reply_to(
             message,
