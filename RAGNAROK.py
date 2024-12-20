@@ -118,6 +118,9 @@ def handle_attack(message):
         bot.reply_to(message, "⚠️ Attack duration cannot exceed 240 seconds.")
         return
 
+    # Set the cooldown immediately after validation
+    attack_data['last_used'] = now  # Set the cooldown here, before starting the attack
+
     # Execute the attack
     full_command = f"./{binary} <target_ip> <target_port> <duration>"
     try:
@@ -135,11 +138,9 @@ def handle_attack(message):
         bot.reply_to(message, f"❌ Execution Error: {str(e)}")
         return
 
-    # Update cooldown and user data
-    attack_data['last_used'] = now
+    # Update user data
     user['attacks'] += 1
     save_users()
-
 # Command to check remaining attacks
 @bot.message_handler(commands=['remaining'])
 def remaining_attacks(message):
