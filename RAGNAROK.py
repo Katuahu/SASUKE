@@ -6,7 +6,7 @@ import subprocess
 import threading
 
 # Insert your Telegram bot token here
-bot = telebot.TeleBot('YOUR_BOT_TOKEN')
+bot = telebot.TeleBot('8055632675:AAFP5nV0zAFvGtKy70oSAnG6pZQ0hDmBIZ4')
 
 # Admin user IDs
 admin_id = ["5599402910"]
