@@ -28,7 +28,7 @@ attack_cooldowns = {
     'attack2': {'cooldown': 300, 'last_used': None, 'binary': 'RAGNAROK1'},
     'attack3': {'cooldown': 450, 'last_used': None, 'binary': 'RAGNAROK2'},
     'attack4': {'cooldown': 400, 'last_used': None, 'binary': 'RAGNAROK3'},
-    'attack5': {'cooldown': 340, 'last_used': None, 'binary': 'RAGNAROK4'}
+    'attack5': {'cooldown': 350, 'last_used': None, 'binary': 'RAGNAROK4'}
 }
 
 # Global variables
