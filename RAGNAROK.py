@@ -24,10 +24,10 @@ USER_FILE = "users.txt"
 
 # Cooldowns and binaries for each attack
 attack_cooldowns = {
-    'attack1': {'cooldown': 240, 'last_used': None, 'binary': 'RAGNAROK'},
+    'attack1': {'cooldown': 500, 'last_used': None, 'binary': 'RAGNAROK'},
     'attack2': {'cooldown': 300, 'last_used': None, 'binary': 'RAGNAROK1'},
-    'attack3': {'cooldown': 280, 'last_used': None, 'binary': 'RAGNAROK2'},
-    'attack4': {'cooldown': 300, 'last_used': None, 'binary': 'RAGNAROK3'},
+    'attack3': {'cooldown': 450, 'last_used': None, 'binary': 'RAGNAROK2'},
+    'attack4': {'cooldown': 400, 'last_used': None, 'binary': 'RAGNAROK3'},
     'attack5': {'cooldown': 340, 'last_used': None, 'binary': 'RAGNAROK4'}
 }
 
@@ -68,6 +68,7 @@ def is_user_in_channel(user_id):
 @bot.message_handler(commands=['attack1', 'attack2', 'attack3', 'attack4', 'attack5'])
 def handle_attack(message):
     command = message.text.split()[0][1:]  # Get the command name (e.g., 'attack1')
+    command = command.split('@')[0]  # Strip the bot username if present
     user_id = str(message.from_user.id)
 
     # Ensure the command exists in cooldowns
@@ -85,9 +86,12 @@ def handle_attack(message):
     # Apply cooldown check and start cooldown immediately when attack is initiated
     if attack_data['last_used'] and (now - attack_data['last_used']).seconds < cooldown:
         remaining = cooldown - (now - attack_data['last_used']).seconds
-        bot.reply_to(message, f"⏳ **{command} is on cooldown:** `{remaining} seconds` remaining.")
-        return
-
+        bot.reply_to(
+    message, 
+    f"⏳ **{command} is on cooldown:** `{remaining} seconds` remaining.\n\n"
+    f"Click /attack_status to see all attacks' status."
+)
+return
     # Check usage requirements
     if message.chat.id != int(GROUP_ID):
         bot.reply_to(message, "❌ This bot can only be used in the specified group.")
