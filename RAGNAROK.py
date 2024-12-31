@@ -9,7 +9,7 @@ import threading
 bot = telebot.TeleBot('7324937828:AAGM4JDN8R96QhFcgybNhpYzV5eXlGTcB1s')
 
 # Admin user IDs
-admin_id = ["5599402910"]
+admin_id = ["6284940908"]
 
 # Group and channel details
 GROUP_ID = "-1001515732695"
