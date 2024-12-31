@@ -12,7 +12,7 @@ bot = telebot.TeleBot('7324937828:AAGM4JDN8R96QhFcgybNhpYzV5eXlGTcB1s')
 admin_id = ["6284940908"]
 
 # Group and channel details
-GROUP_ID = "-1001515732695"
+GROUP_ID = "-1001592040858"
 REQUIRED_CHANNELS = [
     "@KennyPvtHaxx",
     "@KennyPvtHaxx"
