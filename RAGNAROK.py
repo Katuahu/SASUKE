@@ -6,16 +6,16 @@ import subprocess
 import threading
 
 # Insert your Telegram bot token here
-bot = telebot.TeleBot('8055632675:AAFP5nV0zAFvGtKy70oSAnG6pZQ0hDmBIZ4')
+bot = telebot.TeleBot('7324937828:AAGM4JDN8R96QhFcgybNhpYzV5eXlGTcB1s')
 
 # Admin user IDs
 admin_id = ["5599402910"]
 
 # Group and channel details
-GROUP_ID = "-1002155671416"
+GROUP_ID = "-1001515732695"
 REQUIRED_CHANNELS = [
-    "@RAGNAROKCRACKER",
-    "@RAGNAROKCRACKS"
+    "@KennyPvtHaxx",
+    "@KennyPvtHaxx"
 ]
 
 # Default attack limit
